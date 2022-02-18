@@ -1,23 +1,58 @@
 <template>
   <div class="input-container">
-    <label class="label" v-if="modelValue">
+    <label class="label" v-if="value">
       {{ label }}
     </label>
     <input
+      ref="input"
       :placeholder="label"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      :value="value"
+      @input="updateValue"
       class="input"
       :readOnly="readOnly"
     />
+    <span v-if="error" class="error">{{ error }}</span>
   </div>
 </template>
 
 <script>
+const numberRegex = /[^0-9.]/g;
 export default {
   name: 'TextInput',
   props: ['label', 'modelValue', 'readOnly'],
   emits: ['update:modelValue'],
+
+  data() {
+    return {
+      error: '',
+      value: '',
+    };
+  },
+
+  watch: {
+    modelValue: {
+      immediate: true,
+      handler(val) {
+        this.value = String(val).replace(numberRegex, '');
+      },
+    },
+  },
+
+  methods: {
+    updateValue(event) {
+      const numberVal = event.target.value.replace(numberRegex, '');
+
+      if (!numberVal || parseInt(numberVal, 10) > 500) {
+        this.error = 'Please enter a number value from 1 to 500';
+      } else {
+        this.error = '';
+        this.$emit('update:modelValue', parseInt(numberVal, 10));
+      }
+
+      this.value = numberVal;
+      this.$refs.input.value = String(numberVal);
+    },
+  },
 };
 </script>
 
@@ -48,5 +83,14 @@ export default {
 
 .input:read-only {
   cursor: unset;
+}
+
+.error {
+  position: absolute;
+  top: 55px;
+  left: 0px;
+  color: red;
+  font-size: 12px;
+  line-height: 20px;
 }
 </style>

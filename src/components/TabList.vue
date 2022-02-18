@@ -14,6 +14,7 @@
         :key="item.key"
         @click="onClickTab && onClickTab(index)"
         class="flex-row tab-item"
+        :class="{ selected: selectedItem?.key === item.key }"
       >
         <component :is="item.icon" />
         <span class="tab-item-name">{{ item.name }}</span>
@@ -32,7 +33,7 @@
 <script>
 export default {
   name: 'TabList',
-  props: ['items', 'heading', 'onClickTab'],
+  props: ['items', 'heading', 'onClickTab', 'selectedItem'],
 };
 </script>
 
@@ -107,9 +108,16 @@ export default {
   border-radius: 3.36px;
 }
 .tab-item-name {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   color: #e0f5ff;
   margin-left: 13px;
+}
+
+.selected {
+  background-color: #2a2e94;
+}
+ul {
+  list-style-type: none;
 }
 </style>

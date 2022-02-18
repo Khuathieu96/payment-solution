@@ -1,6 +1,6 @@
 <template>
   <div class="flex-column convert-container">
-    <div class="flex-row">
+    <div class="flex-row row-convert">
       <div class="flex-row dropdown-box">
         <div class="flex-column column1">
           <component :is="currencyIcon[typeFrom]" />
@@ -12,11 +12,13 @@
         <text-input label="You send" v-model="amountFrom" />
       </div>
     </div>
-    <div class="flex-column infor-box">
-      <time-line :items="rate" />
+    <div class="flex-row row-convert">
+      <div class="flex-column infor-box">
+        <time-line :items="rate" />
+      </div>
     </div>
 
-    <div class="flex-row">
+    <div class="flex-row row-convert">
       <div class="flex-row dropdown-box">
         <div class="flex-column column1">
           <component :is="currencyIcon[typeTo]" />
@@ -51,9 +53,9 @@ export default {
     return {
       currencyIcon,
       currencyType,
-      amountFrom: 1,
+      amountFrom: 0,
       typeFrom: 'USD',
-      amountTo: 1.204355,
+      amountTo: 0,
       typeTo: 'CAD',
 
       rate: [
@@ -72,13 +74,16 @@ export default {
     },
   },
   watch: {
-    stateDependencies() {
-      const convertedAmount = convertCurrency(
-        this.getCurrencyRate[this.typeFrom],
-        this.getCurrencyRate[this.typeTo],
-        this.amountFrom,
-      );
-      this.amountTo = convertedAmount;
+    stateDependencies: {
+      immediate: true,
+      handler() {
+        const convertedAmount = convertCurrency(
+          this.getCurrencyRate[this.typeFrom],
+          this.getCurrencyRate[this.typeTo],
+          this.amountFrom,
+        );
+        this.amountTo = convertedAmount;
+      },
     },
   },
 
@@ -95,14 +100,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.row-convert {
+  width: 100%;
+  justify-content: center;
+}
 .convert-container {
   flex: 1;
-  align-items: center;
   padding-top: 113px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .input-box {
-  width: 307px;
+  max-width: 307px;
+  width: inherit;
   height: 104px;
   padding: 0 24px;
   align-items: center;
@@ -113,7 +124,9 @@ export default {
 }
 
 .dropdown-box {
-  width: 208px;
+  max-width: 208px;
+  width: inherit;
+  padding: 15px;
   height: 104px;
   margin-right: 6px;
   background: #ffffff;
@@ -124,7 +137,9 @@ export default {
 }
 
 .infor-box {
-  width: 446px;
+  max-width: 446px;
+  width: inherit;
+  min-width: 310px;
   height: 154px;
   background: #edf6ff;
   margin: 0 35px 0 35px;

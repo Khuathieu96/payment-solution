@@ -4,6 +4,7 @@
       :items="itemsTab"
       :heading="getCurrentStep.name"
       :onClickTab="changeCurrentTab"
+      :selectedItem="selectedItem"
     />
   </div>
 </template>
@@ -26,12 +27,17 @@ export default {
     return { listStepIcon };
   },
   computed: {
-    ...mapGetters(['getCurrentStep']),
+    ...mapGetters(['getCurrentStep', 'getCurrentKey']),
     itemsTab() {
       return this.getCurrentStep.tabs.map((item) => ({
         ...item,
         icon: this.listStepIcon[item.key],
       }));
+    },
+    selectedItem() {
+      return this.getCurrentStep.tabs.find(
+        (item) => item.key === this.getCurrentKey.tabKey,
+      );
     },
   },
   methods: {
